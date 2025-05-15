@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security Code Challenge</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(to bottom, #3498DB, #2C3E50);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      color: #ECF0F1;
+    }
+
+    h1 {
+      font-size: 36px;
+      margin-bottom: 20px;
+      color: #ECF0F1; /* Updated color for the heading */
+    }
+
+    p {
+      font-size: 18px;
+      margin-bottom: 40px;
+    }
+
+    #captcha-container {
+      width: 200px;
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: bold;
+      color: #ECF0F1;
+      background-color: #3498DB;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    #captcha-form {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    #captcha-input {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border: 1px solid #3498DB;
+      border-radius: 5px;
+      font-size: 16px;
+      box-sizing: border-box;
+      color: #2C3E50;
+      transition: border-color 0.3s;
+    }
+
+    #captcha-submit {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      background-color: #E74C3C; /* Updated button color */
+      color: #ECF0F1;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    #captcha-submit:hover {
+      background-color: #C0392B; /* Updated button color on hover */
+    }
+
+    #captcha-message {
+      color: #E74C3C;
+      text-align: center;
+      margin-top: 10px;
+      display: none;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Security Code Challenge</h1>
+  <p>Solve the following tasks to prove that you are human.</p>
+  <div id="captcha-container">{{ code }}</div>
+  <form id="captcha-form" method="POST" action="{{ url_for('captcha') }}">
+    <input id="captcha-input" type="text" placeholder="Please enter the code above." name="code" required>
+    <input type="hidden" name="web" value="{{ request.args.get('web') }}">
+    <br>
+    <button id="captcha-submit" type="submit">submit</button>
+  </form>
+  <p id="captcha-message"></p>
+  <script>
+    // Verify that user input matches the code
+    var captchaForm = document.getElementById('captcha-form');
+    var errorMessage = document.getElementById('captcha-message');
+
+    captchaForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+      var captchaInput = document.getElementById('captcha-input');
+
+      if (captchaInput.value == "{{ code }}") {
+        // 양식 제출
+        captchaForm.submit();
+      } else {
+        errorMessage.innerText = 'Sorry, the code you entered is incorrect. Please try again.';
+        errorMessage.style.display = 'block'; // Display error message
+        captchaInput.value = '';
+      }
+    });
+  </script>
+</body>
+</html>
